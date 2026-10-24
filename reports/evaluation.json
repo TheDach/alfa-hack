@@ -1,0 +1,233 @@
+{
+  "evaluation": "local holdout; surrogate reference, not organizer baseline",
+  "tasks": {
+    "regression": {
+      "task": "regression",
+      "metric_name": "rmse",
+      "reference_metric": 43.196225380403874,
+      "agent_metric": 41.014913869779825,
+      "reference_model": "RandomForest(n_estimators=200,max_depth=12,min_samples_leaf=2,random_state=42)",
+      "reference_seconds": 11.391000000061467,
+      "agent_seconds": 526.3589999999385,
+      "train_rows": 42646,
+      "holdout_rows": 10662,
+      "seed": 20261023,
+      "status": "complete",
+      "report": "C:\\hackaton\\reports\\benchmark\\regression\\runs\\20261023_142436_14540\\report.json",
+      "trials": 8,
+      "llm_enabled": false,
+      "diagnostics": {
+        "residual_quantiles": [
+          -374.8900694038671,
+          -31.021965854853175,
+          -2.445445903793839,
+          28.22249734920755,
+          898.8938354758372
+        ],
+        "rmse": 41.014913869779825,
+        "mae": 21.271417579959024,
+        "target_prediction_correlation": 0.6956526195505515
+      }
+    },
+    "classification": {
+      "task": "classification",
+      "metric_name": "macro_f1",
+      "reference_metric": 0.5236566749397844,
+      "agent_metric": 0.6528269385145857,
+      "reference_model": "RandomForest(n_estimators=200,max_depth=12,min_samples_leaf=2,random_state=42)",
+      "reference_seconds": 2.969000000040978,
+      "agent_seconds": 473.4370000001509,
+      "train_rows": 70137,
+      "holdout_rows": 17533,
+      "seed": 20261023,
+      "status": "complete",
+      "report": "C:\\hackaton\\reports\\benchmark\\classification\\runs\\20261023_143327_10756\\report.json",
+      "trials": 5,
+      "llm_enabled": false,
+      "diagnostics": {
+        "per_class_f1": [
+          0.30036630036630035,
+          0.23636363636363636,
+          0.4846097020438316,
+          0.67008486562942,
+          0.7623841059602648,
+          0.9900541357169835,
+          0.9303432494279176,
+          0.8413361169102297,
+          0.6763636363636364,
+          0.6363636363636364
+        ],
+        "accuracy": 0.8158900359322421,
+        "weighted_f1": 0.8245250787999743,
+        "confusion_matrix": [
+          [
+            41,
+            6,
+            131,
+            8,
+            1,
+            0,
+            13,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            26,
+            119,
+            21,
+            1,
+            1,
+            0,
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            3,
+            984,
+            202,
+            8,
+            0,
+            3,
+            8,
+            14,
+            0
+          ],
+          [
+            5,
+            7,
+            1280,
+            1895,
+            43,
+            8,
+            22,
+            49,
+            29,
+            1
+          ],
+          [
+            2,
+            2,
+            132,
+            22,
+            1439,
+            1,
+            204,
+            2,
+            14,
+            0
+          ],
+          [
+            0,
+            1,
+            33,
+            27,
+            5,
+            3932,
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            17,
+            0,
+            12,
+            39,
+            441,
+            0,
+            5082,
+            2,
+            7,
+            0
+          ],
+          [
+            0,
+            0,
+            141,
+            96,
+            3,
+            1,
+            0,
+            806,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            2,
+            16,
+            0,
+            0,
+            0,
+            93,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ]
+      }
+    }
+  },
+  "points": {
+    "regression_points": 5.049773426762439,
+    "classification_points": 27.11705124837692,
+    "score": 16.08341233756968
+  },
+  "official_score": null,
+  "limitations": [
+    "Official hidden test targets and baseline metric values are unavailable.",
+    "LLM integration requires organizer-provided Qwen credentials."
+  ],
+  "submission_verification": [
+    {
+      "task": "C:\\hackaton\\data\\regression\\task.md",
+      "submission": "C:\\hackaton\\data\\regression\\submission.csv",
+      "rows": 22449,
+      "columns": [
+        "id",
+        "site_eui"
+      ],
+      "valid": true
+    },
+    {
+      "task": "C:\\hackaton\\data\\classification\\task.md",
+      "submission": "C:\\hackaton\\data\\classification\\submission.csv",
+      "rows": 41166,
+      "columns": [
+        "id",
+        "attack_cat"
+      ],
+      "valid": true
+    }
+  ],
+  "tests": {
+    "passed": 104,
+    "warnings": 13
+  },
+  "source_sha256": {
+    "Alfa_Khak_AutoML.pdf": "ed782a34f5bd8893f7175b997ca040cf89bbde63b1e56795ae73defa39c646b3",
+    "reference/baseline.py": "ecf66e8d7c054624eeca710c13e2b82c1ac22a03314db8a45ff1778fa16e372d",
+    "reference/requirements.txt": "ac27e467b9c5c6b8b6ca2a042a67e2beeb7d08e4d12d3852408909d2d5a07b0e"
+  },
+  "package_sha256": "0d7b255bd9016920facd6941cc6d2960c28dc0abf2e916e5f58ce6d6736b318f",
+  "final_predictions_trained_on_full_public_train": true,
+  "docker_tested": false,
+  "submitted_to_platform": false,
+  "real_qwen_tested": false
+}
