@@ -8,6 +8,7 @@ __pycache__/
 data/
 work/
 research_runs/
-reports/benchmark/
+reports/benchmark*/
 dist/
 submission.csv
+.automl_cache/

@@ -144,6 +144,97 @@ def load_task(path, target=None, kind=None, metric=None, output=None):
                 kind, metric, destination, [c for c in categorical if c in features])
 
 
+def summarize_description(text, limit=3000):
+    """Keep the task and evaluation requirements rather than a file-list prefix."""
+    blocks = []
+    for order, raw in enumerate(re.split(r"\n\s*\n", text)):
+        lines = [line.strip() for line in raw.splitlines() if line.strip()]
+        lines = [line for line in lines if not line.startswith(("|", "```"))
+                 and not re.search(r"`[^`]*\.(?:csv|md)`", line, re.IGNORECASE)]
+        block = " ".join(lines)
+        if not block or re.fullmatch(r"#+\s*(?:данные|data|описание полей|columns)", block, re.I):
+            continue
+        low = block.lower()
+        priority = 8 if order == 0 else 0
+        if re.search(r"метрик|metric|rmse|rmsle|macro.?f1|roc.?auc|log.?loss|accuracy", low):
+            priority += 6
+        if re.search(r"предскаж|прогноз|построй|целев|таргет|predict|target|goal|задач", low):
+            priority += 4
+        if re.search(r"валидац|validation|split|групп|group|временн|temporal", low):
+            priority += 4
+        if re.search(r"единиц|шкал|unit|scale|формат|порядок|order|конечн|пропуск|missing", low):
+            priority += 3
+        if len(block) > 650:
+            block = block[:650].rsplit(" ", 1)[0] + " …"
+        blocks.append((priority, order, block))
+    selected, used = [], 0
+    for _, order, block in sorted(blocks, key=lambda row: (-row[0], row[1])):
+        if used + len(block) + 2 <= limit:
+            selected.append((order, block))
+            used += len(block) + 2
+    return "\n\n".join(block for _, block in selected)
+
+
+def _temporal_shifts(task, numeric):
+    shifts = []
+    for name in numeric:
+        if not re.search(r"year|time|date|period|factor|год|период|дата|врем", str(name), re.I):
+            continue
+        train = pd.to_numeric(task.train[name], errors="coerce").dropna()
+        test = pd.to_numeric(task.test[name], errors="coerce").dropna()
+        if 3 <= train.nunique() <= 30 and len(test) and test.min() > train.max():
+            shifts.append({"column": name, "train_min": float(train.min()),
+                           "train_max": float(train.max()), "test_min": float(test.min()),
+                           "test_max": float(test.max()), "train_periods": int(train.nunique())})
+    return shifts
+
+
+def _entity_groups(task, numeric, records):
+    if task.kind != "regression":
+        return []
+    semantics = {row["feature"]: (row["feature"] + " " + row.get("description", "")).lower()
+                 for row in records}
+    areas = [name for name in numeric if re.search(r"area|surface|площад", semantics.get(name, name), re.I)]
+    built = [name for name in numeric if re.search(r"built|construction|постро|возраст", semantics.get(name, name), re.I)]
+    if not areas or not built:
+        return []
+    categorical = [name for name in task.categorical if 1 < task.train[name].nunique() <= 200]
+    categorical.sort(key=lambda name: (
+        not bool(re.search(r"purpose|facility|location|state|site|назначен|штат|местополож", semantics.get(name, name))),
+        -task.train[name].nunique()))
+    selected = []
+    for name in categorical:
+        # A coarse category fully determined by a finer one adds no identity.
+        redundant = any(task.train.groupby(other, dropna=False)[name].nunique(dropna=False).max() <= 1
+                        for other in selected)
+        if not redundant:
+            selected.append(name)
+        if len(selected) == 3:
+            break
+    base = list(dict.fromkeys([areas[0], built[0]]))
+    proposals = [base + selected[:2], base + selected[:1], base]
+    groups, seen = [], set()
+    for columns in proposals:
+        signature = tuple(columns)
+        if signature in seen or not 2 <= len(columns) <= 5:
+            continue
+        seen.add(signature)
+        def keys(frame):
+            values = {}
+            for name in columns:
+                if pd.api.types.is_numeric_dtype(task.train[name]):
+                    values[name] = pd.to_numeric(frame[name], errors="coerce").astype(float)
+                else:
+                    values[name] = frame[name].astype("string").fillna("__missing__")
+            return pd.util.hash_pandas_object(pd.DataFrame(values), index=False)
+        train_keys, test_keys = keys(task.train), keys(task.test)
+        duplicate_fraction = float(train_keys.duplicated(keep=False).mean())
+        if duplicate_fraction >= .2:
+            groups.append({"columns": columns, "train_duplicate_fraction": round(duplicate_fraction, 4),
+                           "test_seen_fraction": round(float(test_keys.isin(train_keys).mean()), 4)})
+    return groups
+
+
 def profile_task(task):
     x = task.train[task.features]
     numeric = [c for c in x.select_dtypes(include="number") if c not in task.categorical]
@@ -151,7 +242,34 @@ def profile_task(task):
                "train_rows": len(x), "test_rows": len(task.test), "feature_count": len(x.columns),
                "numeric_columns": numeric, "categorical_columns": [c for c in x if c not in numeric],
                "missing_fraction": x.isna().mean().round(4).to_dict(),
-               "cardinality": x.nunique().to_dict(), "description": task.description[:14000]}
+               "cardinality": x.nunique().to_dict(),
+               "description": summarize_description(task.description)}
+    # Keep arbitrary dictionary units and meanings. This ordering uses schema
+    # and input missingness only, never validation targets.
+    if "feature" in task.dictionary:
+        records = []
+        for _, row in task.dictionary.iterrows():
+            name = str(row["feature"])
+            if name not in {task.target, *task.features}:
+                continue
+            record = {"feature": name}
+            for source, destination in (("role", "role"), ("dtype", "dtype"),
+                                        ("unit", "unit"), ("description_ru", "description"),
+                                        ("description", "description")):
+                if source in row and pd.notna(row[source]) and destination not in record:
+                    value = re.sub(r"\s+", " ", str(row[source])).strip()
+                    if value:
+                        record[destination] = value[:240 if destination == "description" else 80]
+            records.append(record)
+        missing = profile["missing_fraction"]
+        order = {name: i for i, name in enumerate(task.features)}
+        records.sort(key=lambda row: (row["feature"] != task.target,
+                                     row["feature"] not in task.categorical,
+                                     -missing.get(row["feature"], 0),
+                                     order.get(row["feature"], -1)))
+        profile["data_dictionary"] = records
+        profile["entity_groups"] = _entity_groups(task, numeric, records)
+    profile["temporal_shift"] = _temporal_shifts(task, numeric)
     if task.kind == "classification":
         profile["class_counts"] = {str(k): int(v) for k, v in task.train[task.target].value_counts().items()}
     else:

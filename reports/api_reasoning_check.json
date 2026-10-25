@@ -1,0 +1,20 @@
+{
+  "finish_reason": "stop",
+  "content_chars": 739,
+  "reasoning_chars": 6024,
+  "model": "qwen/qwen3.8-27b",
+  "accepted": true,
+  "events": [
+    {
+      "status": "accepted",
+      "config_id": 0
+    }
+  ],
+  "usage": {
+    "calls": 1,
+    "prompt_tokens": 2776,
+    "completion_tokens": 1962,
+    "total_tokens": 4738,
+    "estimated_usage_calls": 0
+  }
+}

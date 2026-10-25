@@ -1,0 +1,9 @@
+{
+  "archive_sha256": "4ff7035f190be7747a5ac115b62ce0fe809e8212a10cfbd01b0c06d886d24e46",
+  "archive_bytes": 22349,
+  "files": 40,
+  "key_excluded_from_archive_and_git": true,
+  "local_dependencies_allowlisted": true,
+  "requirements_sha256": "9173b0388532fbd2a709e4f4b3029e3b9ccab685fce43a85261ffa1ba95efbe6",
+  "tests_passed": 111
+}

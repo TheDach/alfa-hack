@@ -102,7 +102,7 @@ def test_rejects_changed_sample_order(tmp_path):
         load_task(task.path)
 
 
-@pytest.mark.parametrize("family", ["catboost", "lightgbm", "extra_trees", "linear"])
+@pytest.mark.parametrize("family", ["catboost", "lightgbm", "lightgbm_ordinal", "extra_trees", "linear"])
 @pytest.mark.parametrize("kind", ["regression", "classification"])
 def test_model_families_handle_missing_and_unseen_values(family, kind):
     rng = np.random.default_rng(42)
@@ -116,6 +116,8 @@ def test_model_families_handle_missing_and_unseen_values(family, kind):
               "categorical": ["cat"], "kind": kind, "metric": "rmse" if kind == "regression" else "macro_f1",
               "n_classes": 0 if kind == "regression" else 2, "threads": 1, "seed": 42}
     config = {"family": family, "iterations": 20, "depth": 4, "features": "extended"}
+    if family == "lightgbm_ordinal":
+        config.update(family="lightgbm", categorical_encoding="ordinal")
     model, _ = train_model(bundle, config)
     result = model.predict(pd.DataFrame({"x": [None, 2.], "cat": ["unseen", "a"]}))
     assert len(result) == 2

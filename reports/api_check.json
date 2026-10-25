@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "model": "qwen/qwen3.8-27b",
+  "accepted": true,
+  "events": [
+    {
+      "status": "accepted",
+      "config_id": 0
+    }
+  ],
+  "usage": {
+    "calls": 1,
+    "prompt_tokens": 322,
+    "completion_tokens": 537,
+    "total_tokens": 859,
+    "estimated_usage_calls": 0
+  },
+  "disabled_reason": ""
+}

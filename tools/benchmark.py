@@ -59,8 +59,10 @@ def benchmark_one(name, args):
     command = [sys.executable, str(ROOT / "solution.py"), str(folder / "task.md"),
                "--time-budget", str(args.time_budget), "--max-trials", str(args.max_trials),
                "--threads", str(args.threads), "--trial-timeout", str(args.trial_timeout),
-               "--offline",
+               "--memory-gb", str(args.memory_gb),
                "--work-dir", str(folder / "runs")]
+    if not args.online:
+        command.append("--offline")
     start = time.monotonic()
     with (folder / "agent.log").open("w", encoding="utf-8") as log:
         result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, timeout=args.time_budget + 60)
@@ -80,6 +82,7 @@ def benchmark_one(name, args):
                "train_rows": len(train), "holdout_rows": len(holdout), "seed": args.seed,
                "status": report["status"], "report": latest["report"],
                "trials": len(report["history"]), "llm_enabled": report["llm_enabled"],
+               "llm_usage": report["llm_usage"], "llm_events": report["llm_events"],
                "diagnostics": error_summary(task.kind, truth, probabilities, len(label_encoder.classes_) if label_encoder else 0)}
     atomic_json(folder / "metrics.json", summary)
     print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
@@ -95,6 +98,8 @@ def main():
     parser.add_argument("--threads", type=int, default=8)
     parser.add_argument("--trial-timeout", type=float, default=180)
     parser.add_argument("--seed", type=int, default=20261023)
+    parser.add_argument("--memory-gb", type=float, default=5)
+    parser.add_argument("--online", action="store_true", help="Use the organizer API configured in .env")
     args = parser.parse_args()
     results = {name: benchmark_one(name, args) for name in args.tasks}
     if {"regression", "classification"} <= set(results):
@@ -103,7 +108,7 @@ def main():
         combined = {"evaluation": "local holdout; surrogate reference, not organizer baseline", "tasks": results,
                     "points": score, "official_score": None,
                     "limitations": ["Official hidden test targets and baseline metric values are unavailable.",
-                                    "LLM integration requires organizer-provided Qwen credentials."]}
+                                    "Local results do not determine the official leaderboard score."]}
         atomic_json(Path(args.output) / "summary.json", combined)
         print(json.dumps(combined, ensure_ascii=False, indent=2), flush=True)
 

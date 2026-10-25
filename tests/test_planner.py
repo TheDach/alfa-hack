@@ -55,8 +55,8 @@ class PlannerTests(unittest.TestCase):
         self.assertEqual(request.full_url, "https://example.test/v1/chat/completions")
         payload = json.loads(request.data)
         self.assertEqual(payload["model"], "Qwen-test")
-        self.assertLessEqual(payload["max_tokens"], 1200)
-        self.assertEqual(call.call_args.kwargs["timeout"], 25)
+        self.assertLessEqual(payload["max_tokens"], 4096)
+        self.assertEqual(call.call_args.kwargs["timeout"], 59.75)
         self.assertEqual(planner.usage["total_tokens"], 100)
 
     def test_profile_is_untrusted_data(self):
@@ -121,6 +121,17 @@ class PlannerTests(unittest.TestCase):
         with patch("urllib.request.urlopen") as call:
             self.assertIsNone(QwenPlanner().propose({}, [], ALLOWED, 30))
             call.assert_not_called()
+
+    def test_truncated_reasoning_is_reported_without_executing_partial_json(self):
+        body = {"choices": [{"finish_reason": "length", "message": {"content": "",
+                 "reasoning_content": "internal reasoning omitted"}}],
+                "usage": {"prompt_tokens": 100, "completion_tokens": 4096, "total_tokens": 4196}}
+        with patch("urllib.request.urlopen", return_value=io.BytesIO(json.dumps(body).encode())):
+            planner = QwenPlanner()
+            self.assertIsNone(planner.propose({}, [], ALLOWED, 90))
+        self.assertEqual(planner.events[-1]["reason"], "response_truncated")
+        self.assertEqual(planner.usage["total_tokens"], 4196)
+        self.assertNotIn("internal reasoning", json.dumps(planner.events))
 
     def test_missing_usage_charged_conservatively(self):
         with patch("urllib.request.urlopen", return_value=api_response(

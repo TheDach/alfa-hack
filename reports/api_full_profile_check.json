@@ -1,0 +1,20 @@
+{
+  "finish_reason": "length",
+  "content_chars": 0,
+  "reasoning_chars": 4143,
+  "model": "qwen/qwen3.8-27b",
+  "accepted": false,
+  "events": [
+    {
+      "status": "rejected",
+      "reason": "invalid_proposal"
+    }
+  ],
+  "usage": {
+    "calls": 1,
+    "prompt_tokens": 2203,
+    "completion_tokens": 1200,
+    "total_tokens": 3403,
+    "estimated_usage_calls": 0
+  }
+}

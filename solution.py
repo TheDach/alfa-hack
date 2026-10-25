@@ -11,7 +11,7 @@ def arguments():
     parser.add_argument("--output")
     parser.add_argument("--work-dir")
     parser.add_argument("--time-budget", type=float, default=float(os.getenv("TIME_BUDGET_SECONDS", "10320")))
-    parser.add_argument("--max-trials", type=int, default=16)
+    parser.add_argument("--max-trials", type=int, default=24)
     parser.add_argument("--trial-timeout", type=float, default=900)
     parser.add_argument("--threads", type=int, default=8)
     parser.add_argument("--memory-gb", type=float, default=27)
@@ -42,6 +42,10 @@ def arguments():
 def main():
     started = time.monotonic()
     args = arguments()
+    cache = Path(args.task).resolve().parent / ".automl_cache" / "matplotlib"
+    if not os.environ.get("MPLCONFIGDIR"):
+        cache.mkdir(parents=True, exist_ok=True)
+        os.environ["MPLCONFIGDIR"] = str(cache)
     for key in ["OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS", "NUMEXPR_NUM_THREADS"]:
         os.environ[key] = str(args.threads)
     try:

@@ -1,0 +1,26 @@
+[
+  {
+    "task": "C:\\Users\\vlad\\Desktop\\hackaton\\data\\regression\\task.md",
+    "submission": "C:\\Users\\vlad\\Desktop\\hackaton\\data\\regression\\submission.csv",
+    "rows": 22449,
+    "columns": [
+      "id",
+      "site_eui"
+    ],
+    "valid": true,
+    "saved_model_predictions_match": true,
+    "training_rows": 53308
+  },
+  {
+    "task": "C:\\Users\\vlad\\Desktop\\hackaton\\data\\classification\\task.md",
+    "submission": "C:\\Users\\vlad\\Desktop\\hackaton\\data\\classification\\submission.csv",
+    "rows": 41166,
+    "columns": [
+      "id",
+      "attack_cat"
+    ],
+    "valid": true,
+    "saved_model_predictions_match": true,
+    "training_rows": 87670
+  }
+]

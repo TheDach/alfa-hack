@@ -1,0 +1,344 @@
+{
+  "tasks": {
+    "regression": {
+      "task": "regression",
+      "metric_name": "rmse",
+      "reference_metric": 43.196225380403874,
+      "agent_metric": 40.37942225047048,
+      "reference_model": "RandomForest(n_estimators=200,max_depth=12,min_samples_leaf=2,random_state=42)",
+      "reference_seconds": 70.92200000000594,
+      "agent_seconds": 852.2029999999941,
+      "train_rows": 42646,
+      "holdout_rows": 10662,
+      "seed": 20261023,
+      "status": "complete",
+      "report": "C:\\Users\\vlad\\Desktop\\hackaton\\reports\\benchmark_connected\\regression\\runs\\20261024_170538_7488\\report.json",
+      "trials": 9,
+      "llm_enabled": true,
+      "llm_usage": {
+        "calls": 6,
+        "prompt_tokens": 12925,
+        "completion_tokens": 7128,
+        "total_tokens": 20053,
+        "estimated_usage_calls": 0
+      },
+      "llm_events": [
+        {
+          "status": "rejected",
+          "reason": "invalid_proposal"
+        },
+        {
+          "status": "rejected",
+          "reason": "invalid_proposal"
+        },
+        {
+          "status": "rejected",
+          "reason": "invalid_proposal"
+        },
+        {
+          "status": "rejected",
+          "reason": "invalid_proposal"
+        },
+        {
+          "status": "rejected",
+          "reason": "invalid_proposal"
+        },
+        {
+          "status": "accepted",
+          "config_id": 3
+        },
+        {
+          "status": "skipped",
+          "reason": "no_fitting_configuration"
+        },
+        {
+          "status": "skipped",
+          "reason": "no_fitting_configuration"
+        }
+      ],
+      "diagnostics": {
+        "residual_quantiles": [
+          -337.64303655861033,
+          -30.29517819262192,
+          -2.3179344873857985,
+          27.898346392612876,
+          894.8834407522736
+        ],
+        "rmse": 40.37942225047048,
+        "mae": 20.834116573621188,
+        "target_prediction_correlation": 0.706889708549492
+      }
+    },
+    "classification": {
+      "task": "classification",
+      "metric_name": "macro_f1",
+      "reference_metric": 0.5236566749397844,
+      "agent_metric": 0.6399420349769221,
+      "reference_model": "RandomForest(n_estimators=200,max_depth=12,min_samples_leaf=2,random_state=42)",
+      "reference_seconds": 20.047000000005937,
+      "agent_seconds": 824.375,
+      "train_rows": 70137,
+      "holdout_rows": 17533,
+      "seed": 20261023,
+      "status": "complete",
+      "report": "C:\\Users\\vlad\\Desktop\\hackaton\\reports\\benchmark_encoding\\classification\\report.json",
+      "trials": 10,
+      "llm_enabled": true,
+      "llm_usage": {
+        "calls": 4,
+        "prompt_tokens": 9144,
+        "completion_tokens": 10849,
+        "total_tokens": 19993,
+        "estimated_usage_calls": 0
+      },
+      "llm_events": [
+        {
+          "status": "accepted",
+          "config_id": 2
+        },
+        {
+          "status": "accepted",
+          "config_id": 10
+        },
+        {
+          "status": "rejected",
+          "reason": "response_truncated"
+        },
+        {
+          "status": "rejected",
+          "reason": "response_truncated"
+        },
+        {
+          "status": "skipped",
+          "reason": "no_fitting_configuration"
+        },
+        {
+          "status": "skipped",
+          "reason": "no_fitting_configuration"
+        }
+      ],
+      "diagnostics": {
+        "per_class_f1": [
+          0.27936507936507937,
+          0.21524663677130046,
+          0.47124117053481335,
+          0.6664319662031333,
+          0.7630847029077118,
+          0.9894366197183099,
+          0.9267157090976813,
+          0.8450413223140496,
+          0.6714285714285714,
+          0.5714285714285714
+        ],
+        "accuracy": 0.8117264586779216,
+        "weighted_f1": 0.8213591498516997,
+        "confusion_matrix": [
+          [
+            44,
+            5,
+            131,
+            9,
+            1,
+            0,
+            10,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            24,
+            119,
+            24,
+            0,
+            1,
+            0,
+            0,
+            2,
+            1
+          ],
+          [
+            11,
+            6,
+            934,
+            240,
+            11,
+            1,
+            2,
+            6,
+            15,
+            0
+          ],
+          [
+            15,
+            10,
+            1243,
+            1893,
+            55,
+            14,
+            17,
+            59,
+            32,
+            1
+          ],
+          [
+            5,
+            2,
+            125,
+            27,
+            1509,
+            1,
+            132,
+            2,
+            15,
+            0
+          ],
+          [
+            0,
+            1,
+            35,
+            22,
+            6,
+            3934,
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            35,
+            0,
+            12,
+            35,
+            534,
+            0,
+            4976,
+            2,
+            6,
+            0
+          ],
+          [
+            1,
+            0,
+            137,
+            85,
+            4,
+            1,
+            1,
+            818,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            2,
+            16,
+            0,
+            0,
+            0,
+            94,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            5,
+            1,
+            0,
+            0,
+            0,
+            0,
+            6
+          ]
+        ]
+      },
+      "validation_extension": "Three predeclared ordinal encodings; selected only on original internal validation."
+    }
+  },
+  "official_score": null,
+  "release": {
+    "archive_sha256": "4ff7035f190be7747a5ac115b62ce0fe809e8212a10cfbd01b0c06d886d24e46",
+    "archive_bytes": 22349,
+    "files": 40,
+    "key_excluded_from_archive_and_git": true,
+    "local_dependencies_allowlisted": true,
+    "requirements_sha256": "9173b0388532fbd2a709e4f4b3029e3b9ccab685fce43a85261ffa1ba95efbe6",
+    "tests_passed": 111
+  },
+  "qwen_smoke_test": {
+    "enabled": true,
+    "model": "qwen/qwen3.8-27b",
+    "accepted": true,
+    "events": [
+      {
+        "status": "accepted",
+        "config_id": 0
+      }
+    ],
+    "usage": {
+      "calls": 1,
+      "prompt_tokens": 322,
+      "completion_tokens": 537,
+      "total_tokens": 859,
+      "estimated_usage_calls": 0
+    },
+    "disabled_reason": ""
+  },
+  "qwen_full_profile_test": {
+    "finish_reason": "stop",
+    "content_chars": 739,
+    "reasoning_chars": 6024,
+    "model": "qwen/qwen3.8-27b",
+    "accepted": true,
+    "events": [
+      {
+        "status": "accepted",
+        "config_id": 0
+      }
+    ],
+    "usage": {
+      "calls": 1,
+      "prompt_tokens": 2776,
+      "completion_tokens": 1962,
+      "total_tokens": 4738,
+      "estimated_usage_calls": 0
+    }
+  },
+  "benchmark_limits": {
+    "seconds_per_initial_task": 900,
+    "threads": 4,
+    "memory_gb": 5,
+    "classification_encoding_extension_trials": 3
+  },
+  "selection": "Configurations, feature operations, class weights, and blends selected on internal validation; outer holdout was inspected during development and is diagnostic.",
+  "submitted_to_platform": false,
+  "public_refit_checks": [
+    {
+      "task": "C:\\Users\\vlad\\Desktop\\hackaton\\data\\regression\\task.md",
+      "submission": "C:\\Users\\vlad\\Desktop\\hackaton\\data\\regression\\submission.csv",
+      "rows": 22449,
+      "columns": [
+        "id",
+        "site_eui"
+      ],
+      "valid": true,
+      "saved_model_predictions_match": true,
+      "training_rows": 53308
+    },
+    {
+      "task": "C:\\Users\\vlad\\Desktop\\hackaton\\data\\classification\\task.md",
+      "submission": "C:\\Users\\vlad\\Desktop\\hackaton\\data\\classification\\submission.csv",
+      "rows": 41166,
+      "columns": [
+        "id",
+        "attack_cat"
+      ],
+      "valid": true,
+      "saved_model_predictions_match": true,
+      "training_rows": 87670
+    }
+  ]
+}
